@@ -1,0 +1,6 @@
+{
+  "id": "translated",
+  "name": "Translated",
+  "srcdoc": "./index.html",
+  "fieldTypes": ["Symbol"]
+}
