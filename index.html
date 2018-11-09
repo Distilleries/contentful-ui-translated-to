@@ -2,11 +2,28 @@
 <head>
     <link href="https://static.contentful.com/app/main-62e0abc7.css" media="all" rel="stylesheet" type="text/css">
     <link href="https://static.contentful.com/app/vendor-976872d7.css" media="all" rel="stylesheet" type="text/css">
-    <link href="https://contentful.github.io/ui-extensions-sdk/cf-extension.css" media="all" rel="stylesheet" type="text/css">
+    <link href="https://contentful.github.io/ui-extensions-sdk/cf-extension.css" media="all" rel="stylesheet"
+          type="text/css">
     <script type="text/javascript" src="https://unpkg.com/contentful-ui-extensions-sdk@3"></script>
+    <style>
+        ul li {
+            list-style-type: circle;
+            padding-bottom:10px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .cf-form-field{
+            min-height: 200px;
+        }
+
+    </style>
 </head>
-<div class="widget-slug-editor">
-    <input id="translated" type="text" class="form-control" style="width: 98%; font-size: 14px">
+<div class="cf-form-field">
+    <input id="translated" type="hidden" class="form-control">
+    <div class="cf-form-hint">
+        <ul class="template"></ul>
+    </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/es6-promise/3.0.2/es6-promise.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.js"></script>
@@ -20,17 +37,29 @@
         var input = document.getElementById('translated')
 
         api.window.updateHeight()
-        slugField.onValueChanged(setLocales)
 
+        for(var i in api.locales.available){
+            slugField.onValueChanged(api.locales.available[i],setLocales)
+        }
 
         /**
          * Set the input value to 'slug' and update the status by checking for
          * duplicates.
          */
-        function setLocales () {
-            console.log(api.entry.fields.slug._fieldLocales);
-            input.value = ''
-            translatedField.setValue('')
+        function setLocales() {
+            console.log('SET LOCALES');
+            var locales = '';
+            var html = '';
+            for (var i in api.entry.fields.slug._fieldLocales) {
+                if (api.entry.fields.slug._fieldLocales[i]._value && api.entry.fields.slug._fieldLocales[i]._value != '' && api.entry.fields.slug._fieldLocales[i]._value.indexOf('untitled-') < 0) {
+                    locales += api.entry.fields.slug._fieldLocales[i].locale+',';
+                    html += "<li>"+api.entry.fields.slug._fieldLocales[i].locale+"</li>"
+                }
+            }
+            input.value = locales;
+            translatedField.setValue(locales);
+
+            document.querySelector('.template').innerHTML =html;
         }
 
     })
