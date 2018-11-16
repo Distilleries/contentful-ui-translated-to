@@ -2,5 +2,6 @@
   "id": "translated",
   "name": "Translated",
   "srcdoc": "./index.html",
+  "sidebar": true,
   "fieldTypes": ["Symbol"]
 }
